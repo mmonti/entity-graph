@@ -1,5 +1,6 @@
 package org.mmonti.entitygraph;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.Before;
@@ -33,7 +34,9 @@ public class ApplicationTests extends AbstractTransactionalJUnit4SpringContextTe
 	private IdentityRepository identityRepository;
 
 	@Before
-	public void setup() {}
+	public void setup() {
+		objectMapper = objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+	}
 
 	@Test
 	public void testIdentityLazyManyToMany() throws Exception {
@@ -45,7 +48,7 @@ public class ApplicationTests extends AbstractTransactionalJUnit4SpringContextTe
 
 		Assert.assertNotNull(objectMap);
 		// = ISSUE #21 - objectMap.containsKey('groups') -> should be false since FORCE_LAZY_LOADING is disabled
-		// = in JacksonConfig.
+		// = in JacksonConfig, and also serialization inclusion is set to NON_NULL;
 		Assert.assertTrue(objectMap.containsKey("groups"));
 		Assert.assertNull(objectMap.get("groups"));
 

@@ -1,5 +1,6 @@
 package org.mmonti.entitygraph.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,7 +21,9 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
-        return new Jackson2ObjectMapperBuilder().modulesToInstall(hibernate4Module());
+        return new Jackson2ObjectMapperBuilder()
+                .modulesToInstall(hibernate4Module())
+                .serializationInclusion(JsonInclude.Include.NON_NULL);
     }
 
     @Bean
