@@ -1,11 +1,14 @@
 package org.mmonti.entitygraph.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.mmonti.entitygraph.model.views.GroupView;
+import org.mmonti.entitygraph.model.views.IdentityView;
 
 import javax.persistence.*;
 import javax.validation.constraints.Pattern;
@@ -22,7 +25,7 @@ import java.util.Set;
 })
 @DynamicUpdate
 @EqualsAndHashCode(callSuper = false, of = {"id", "emailAddress"})
-public class Identity extends AbstractEntity {
+public class Identity extends AbstractEntity implements IdentityView {
 
 	private static final String EMAIL_ADDRESS_REGEXP = "^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$";
 	private static final String DISPLAY_NAME_REGEXP = "^[a-zA-Z0-9 ,.'-]+$";
@@ -43,6 +46,7 @@ public class Identity extends AbstractEntity {
 	@Column(name = "display_name", nullable = false, length = 100)
 	private String displayName;
 
+	@JsonSerialize(contentAs = GroupView.class)
 	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(
 			name = "identities_groups",

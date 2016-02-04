@@ -1,12 +1,16 @@
 package org.mmonti.entitygraph.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.mmonti.entitygraph.model.views.GroupView;
+import org.mmonti.entitygraph.model.views.IdentityView;
+import org.mmonti.entitygraph.model.views.PolicyView;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -22,7 +26,7 @@ import java.util.Set;
 })
 @DynamicUpdate
 @EqualsAndHashCode(callSuper = false, of = {"id", "name"})
-public class Group extends AbstractEntity {
+public class Group extends AbstractEntity implements GroupView {
 
 	@Id
 	@GeneratedValue(generator = "custom-uuid")
@@ -37,7 +41,7 @@ public class Group extends AbstractEntity {
 	@Column(name = "description")
 	private String description;
 
-	@JsonIgnore
+	@JsonSerialize(contentAs = IdentityView.class)
 	@ManyToMany
 	@JoinTable(
 			name = "identities_groups",
@@ -45,6 +49,7 @@ public class Group extends AbstractEntity {
 			inverseJoinColumns = {@JoinColumn(name="identity_id", nullable = false, unique = false)})
 	private Set<Identity> identities = new HashSet<Identity>();
 
+	@JsonSerialize(contentAs = PolicyView.class)
 	@ManyToMany(cascade = CascadeType.PERSIST)
 	@JoinTable(
 			name = "groups_policies",

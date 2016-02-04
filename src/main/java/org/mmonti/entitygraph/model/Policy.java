@@ -1,11 +1,15 @@
 package org.mmonti.entitygraph.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.mmonti.entitygraph.model.views.GroupView;
+import org.mmonti.entitygraph.model.views.PolicyView;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -21,7 +25,7 @@ import java.util.Set;
 })
 @DynamicUpdate
 @EqualsAndHashCode(callSuper = false, of = {"id", "name"})
-public class Policy extends AbstractEntity {
+public class Policy extends AbstractEntity implements PolicyView {
 
 	@Id
 	@GeneratedValue(generator = "custom-uuid")
@@ -36,6 +40,7 @@ public class Policy extends AbstractEntity {
 	@Column(name = "description")
 	private String description;
 
+	@JsonIgnore
 	@ManyToMany
 	@JoinTable(
 			name = "groups_policies",
